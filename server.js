@@ -17,20 +17,21 @@ app.use(express.json());
 // MSSQL BAĞLANTI AYARLARI
 // ============================================
 const dbConfig = {
-  server: '10.10.20.15',
-  database: 'SOLIDV3',
+  server: process.env.DB_SERVER,
+  database: process.env.DB_DATABASE,
   authentication: {
     type: 'ntlm',
     options: {
-      domain: 'ZAZAZU',
-      userName: 'nurcan.ahmet',
-      password: 'Hm123456@',
+      domain: process.env.DB_DOMAIN,
+      userName: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
     }
   },
-  options: {
-    encrypt: false,
-    trustServerCertificate: true,
-  },
+ options: {
+  encrypt: false,
+  trustServerCertificate: true,
+  requestTimeout: 300000 // 5 dakika
+},
 };
 
 let pool;
@@ -64,7 +65,6 @@ app.get('/api/dashboard/kpis', async (req, res) => {
     const { startDate, endDate } = req.query;
     const pool = await getPool();
 
-    // Toplam Ciro ve Ort. Sepet (trInvoiceLine kullanıyoruz)
     const salesResult = await pool.request()
       .input('startDate', sql.Date, startDate)
       .input('endDate', sql.Date, endDate)
@@ -79,9 +79,10 @@ app.get('/api/dashboard/kpis', async (req, res) => {
         JOIN trInvoiceLine il ON ih.InvoiceHeaderID = il.InvoiceHeaderID
         WHERE ih.InvoiceDate BETWEEN @startDate AND @endDate
           AND il.Qty1 > 0
+          AND ih.TransTypeCode = 2
+          AND ih.IsReturn = 0
       `);
 
-    // Ziyaretçi sayısı
     const visitorResult = await pool.request()
       .input('startDate', sql.Date, startDate)
       .input('endDate', sql.Date, endDate)
@@ -91,7 +92,6 @@ app.get('/api/dashboard/kpis', async (req, res) => {
         WHERE CurrentDate BETWEEN @startDate AND @endDate
       `);
 
-    // Kritik stok
     const stockResult = await pool.request()
       .query(`
         SELECT COUNT(*) as kritikStok
@@ -133,11 +133,51 @@ app.get('/api/dashboard/sales-trend', async (req, res) => {
         JOIN trInvoiceLine il ON ih.InvoiceHeaderID = il.InvoiceHeaderID
         WHERE ih.InvoiceDate BETWEEN @startDate AND @endDate
           AND il.Qty1 > 0
+          AND ih.TransTypeCode = 2
+          AND ih.IsReturn = 0
         GROUP BY ih.InvoiceDate
         ORDER BY ih.InvoiceDate
       `);
 
-    res.json(result.recordset);
+    const data = result.recordset;
+
+// TOPLAM KPI
+const total = {
+  toplamSatis: data.reduce((sum, x) => sum + (x.SATISVH || 0), 0),
+  toplamMiktar: data.reduce((sum, x) => sum + (x.Qty1 || 0), 0),
+  toplamFatura: data.reduce((sum, x) => sum + (x["Fatura Sayısı"] || 0), 0),
+  toplamZiyaretci: data.reduce((sum, x) => sum + (x["Giren Kişi Sayısı"] || 0), 0),
+  toplamKar: data.reduce((sum, x) => sum + (x.Kar || 0), 0),
+};
+
+// ORTALAMA / ORANLAR
+const oranlar = {
+  donusum:
+    total.toplamZiyaretci > 0
+      ? (total.toplamFatura / total.toplamZiyaretci) * 100
+      : 0,
+
+  ortSepet:
+    total.toplamFatura > 0
+      ? total.toplamSatis / total.toplamFatura
+      : 0,
+
+  birimFiyat:
+    total.toplamMiktar > 0
+      ? total.toplamSatis / total.toplamMiktar
+      : 0,
+
+  brutKarYuzde:
+    total.toplamSatis > 0
+      ? (total.toplamKar / total.toplamSatis) * 100
+      : 0,
+};
+
+res.json({
+  total,
+  oranlar,
+  stores: data, // istersek mağaza listesi de gönderiyoruz
+});
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -203,6 +243,39 @@ app.get('/api/dashboard/critical-stock', async (req, res) => {
 });
 
 // ============================================
+// GENEL BAKIŞ: Kategori Dağılımı
+// ============================================
+app.get('/api/dashboard/categories', async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+    const pool = await getPool();
+
+    const result = await pool.request()
+      .input('startDate', sql.Date, startDate)
+      .input('endDate', sql.Date, endDate)
+      .query(`
+        SELECT 
+          ig.ItemGroupName as name,
+          ISNULL(SUM(il.Qty1 * il.Price), 0) as value
+        FROM trInvoiceHeader ih
+        JOIN trInvoiceLine il ON ih.InvoiceHeaderID = il.InvoiceHeaderID
+        JOIN cdItem i ON il.ItemCode = i.ItemCode
+        JOIN cdItemGroup ig ON i.ItemGroupCode = ig.ItemGroupCode
+        WHERE ih.InvoiceDate BETWEEN @startDate AND @endDate
+          AND il.Qty1 > 0
+          AND ih.TransTypeCode = 2
+          AND ih.IsReturn = 0
+        GROUP BY ig.ItemGroupName
+        ORDER BY value DESC
+      `);
+
+    res.json(result.recordset);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ============================================
 // GÜNLÜK SATIŞ
 // ============================================
 app.get('/api/reports/daily', async (req, res) => {
@@ -231,9 +304,10 @@ app.get('/api/reports/daily', async (req, res) => {
         JOIN trInvoiceLine il ON ih.InvoiceHeaderID = il.InvoiceHeaderID
         WHERE ih.InvoiceDate BETWEEN @startDate AND @endDate
           AND il.Qty1 > 0
+          AND ih.TransTypeCode = 2
+          AND ih.IsReturn = 0
       `);
 
-    // Ziyaretçi sayısı
     const visitorResult = await pool.request()
       .input('startDate', sql.Date, startDate)
       .input('endDate', sql.Date, endDate)
@@ -243,7 +317,6 @@ app.get('/api/reports/daily', async (req, res) => {
         WHERE CurrentDate BETWEEN @startDate AND @endDate
       `);
 
-    // Geçen yıl aynı dönem
     const yoyResult = await pool.request()
       .input('startDate', sql.Date, startDate)
       .input('endDate', sql.Date, endDate)
@@ -253,6 +326,8 @@ app.get('/api/reports/daily', async (req, res) => {
         JOIN trInvoiceLine il ON ih.InvoiceHeaderID = il.InvoiceHeaderID
         WHERE ih.InvoiceDate BETWEEN DATEADD(YEAR, -1, @startDate) AND DATEADD(YEAR, -1, @endDate)
           AND il.Qty1 > 0
+          AND ih.TransTypeCode = 2
+          AND ih.IsReturn = 0
       `);
 
     const sales = result.recordset[0];
@@ -307,9 +382,10 @@ app.get('/api/reports/monthly', async (req, res) => {
         JOIN trInvoiceLine il ON ih.InvoiceHeaderID = il.InvoiceHeaderID
         WHERE YEAR(ih.InvoiceDate) = @year AND MONTH(ih.InvoiceDate) = @month
           AND il.Qty1 > 0
+          AND ih.TransTypeCode = 2
+          AND ih.IsReturn = 0
       `);
 
-    // Ziyaretçi
     const visitorResult = await pool.request()
       .input('year', sql.Int, parseInt(year))
       .input('month', sql.Int, parseInt(month))
@@ -319,7 +395,6 @@ app.get('/api/reports/monthly', async (req, res) => {
         WHERE YEAR(CurrentDate) = @year AND MONTH(CurrentDate) = @month
       `);
 
-    // Geçen yıl aynı ay
     const yoyResult = await pool.request()
       .input('year', sql.Int, parseInt(year) - 1)
       .input('month', sql.Int, parseInt(month))
@@ -329,6 +404,8 @@ app.get('/api/reports/monthly', async (req, res) => {
         JOIN trInvoiceLine il ON ih.InvoiceHeaderID = il.InvoiceHeaderID
         WHERE YEAR(ih.InvoiceDate) = @year AND MONTH(ih.InvoiceDate) = @month
           AND il.Qty1 > 0
+          AND ih.TransTypeCode = 2
+          AND ih.IsReturn = 0
       `);
 
     const sales = result.recordset[0];
@@ -379,6 +456,8 @@ app.get('/api/consultants', async (req, res) => {
         JOIN cdSalesperson sp ON il.SalespersonCode = sp.SalespersonCode
         WHERE ih.InvoiceDate BETWEEN @startDate AND @endDate
           AND il.Qty1 > 0
+          AND ih.TransTypeCode = 2
+          AND ih.IsReturn = 0
         GROUP BY il.SalespersonCode, sp.FirstName, sp.LastName
         HAVING ISNULL(SUM(il.Qty1 * il.Price), 0) > 0
         ORDER BY salesAmount DESC
@@ -396,6 +475,27 @@ app.get('/api/consultants', async (req, res) => {
 
     res.json(consultants);
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// ============================================
+// NEBIM PROCEDURE - GÜNLÜK DASHBOARD
+// ============================================
+app.get('/api/dashboard/gunluk', async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+    const pool = await getPool();
+
+    const result = await pool.request()
+      .input('startDate', sql.VarChar, startDate)
+      .input('endDate', sql.VarChar, endDate)
+      .execute('sp_solid_dashboard_gunluk');
+
+    res.json(result.recordset);
+  } catch (err) {
+    console.error('Procedure hata:', err);
     res.status(500).json({ error: err.message });
   }
 });
