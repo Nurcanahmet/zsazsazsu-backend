@@ -27,11 +27,16 @@ const dbConfig = {
       password: process.env.DB_PASSWORD,
     }
   },
- options: {
-  encrypt: false,
-  trustServerCertificate: true,
-  requestTimeout: 300000 // 5 dakika
-},
+  options: {
+    encrypt: false,
+    trustServerCertificate: true,
+    requestTimeout: 60000, // 60 saniye (300000 çok fazlaydı)
+  },
+  pool: {
+    max: 10,        // maksimum bağlantı
+    min: 2,         // hazırda bekleyen bağlantı
+    idleTimeoutMillis: 30000,
+  }
 };
 
 let pool;
@@ -204,7 +209,44 @@ app.get('/api/dashboard/hourly-traffic', async (req, res) => {
         ORDER BY CurrentHour
       `);
 
-    res.json(result.recordset);
+    const data = result.recordset;
+
+// TOPLAM KPI
+const total = {
+  toplamSatis: data.reduce((sum, x) => sum + (x.SATISVH || 0), 0),
+  toplamMiktar: data.reduce((sum, x) => sum + (x.Qty1 || 0), 0),
+  toplamFatura: data.reduce((sum, x) => sum + (x["Fatura Sayısı"] || 0), 0),
+  toplamZiyaretci: data.reduce((sum, x) => sum + (x["Giren Kişi Sayısı"] || 0), 0),
+  toplamKar: data.reduce((sum, x) => sum + (x.Kar || 0), 0),
+};
+
+const oranlar = {
+  donusum:
+    total.toplamZiyaretci > 0
+      ? (total.toplamFatura / total.toplamZiyaretci) * 100
+      : 0,
+
+  ortSepet:
+    total.toplamFatura > 0
+      ? total.toplamSatis / total.toplamFatura
+      : 0,
+
+  birimFiyat:
+    total.toplamMiktar > 0
+      ? total.toplamSatis / total.toplamMiktar
+      : 0,
+
+  brutKarYuzde:
+    total.toplamSatis > 0
+      ? (total.toplamKar / total.toplamSatis) * 100
+      : 0,
+};
+
+res.json({
+  total,
+  oranlar,
+  stores: data,
+});
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -483,19 +525,38 @@ app.get('/api/consultants', async (req, res) => {
 // ============================================
 // NEBIM PROCEDURE - GÜNLÜK DASHBOARD
 // ============================================
+// ============================================
+// NEBIM PROCEDURE - GÜNLÜK DASHBOARD
+// ============================================
 app.get('/api/dashboard/gunluk', async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
+
+    if (!startDate || !endDate) {
+      return res.status(400).json({ error: 'startDate ve endDate zorunludur.' });
+    }
+
     const pool = await getPool();
 
-    const result = await pool.request()
-      .input('startDate', sql.VarChar, startDate)
-      .input('endDate', sql.VarChar, endDate)
-      .execute('sp_solid_dashboard_gunluk');
+    const request = pool.request();
+    request.timeout = 90000; // 60 saniye timeout
+
+    request
+      .input('Startdate', sql.Date, startDate)
+      .input('enddate', sql.Date, endDate);
+
+    const result = await request.execute('sp_solid_dashboard_gunluk');
+
+    if (!result.recordset || result.recordset.length === 0) {
+      return res.json([]);
+    }
 
     res.json(result.recordset);
   } catch (err) {
     console.error('Procedure hata:', err);
+    if (err.code === 'ETIMEOUT') {
+      return res.status(504).json({ error: 'Sorgu zaman aşımına uğradı. Lütfen tarih aralığını daraltın.' });
+    }
     res.status(500).json({ error: err.message });
   }
 });
