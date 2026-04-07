@@ -3,6 +3,7 @@
 // ============================================
 
 const express = require('express');
+const users = require('./users');
 const sql = require('mssql');
 const cors = require('cors');
 require('dotenv').config();
@@ -525,9 +526,6 @@ app.get('/api/consultants', async (req, res) => {
 // ============================================
 // NEBIM PROCEDURE - GÜNLÜK DASHBOARD
 // ============================================
-// ============================================
-// NEBIM PROCEDURE - GÜNLÜK DASHBOARD
-// ============================================
 app.get('/api/dashboard/gunluk', async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
@@ -559,6 +557,49 @@ app.get('/api/dashboard/gunluk', async (req, res) => {
     }
     res.status(500).json({ error: err.message });
   }
+});
+
+// ============================================
+// LOGIN — Kullanıcı girişi
+// ============================================
+// POST /api/login
+// Body: { email, password }
+// Dönüş: { success, user: {email, name, role, storeCodes} } veya { success: false, error }
+app.post('/api/login', (req, res) => {
+  const { email, password } = req.body;
+
+  // Email ve şifre boş mu kontrol et
+  if (!email || !password) {
+    return res.status(400).json({
+      success: false,
+      error: 'Email ve şifre zorunludur',
+    });
+  }
+
+  // Kullanıcıyı users.js'de ara
+  const user = users.find(
+    (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
+  );
+
+  // Bulunamadıysa hata dön
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      error: 'Email veya şifre hatalı',
+    });
+  }
+
+  // Bulunduysa şifre HARİÇ kullanıcı bilgilerini dön
+  // (şifreyi frontend'e göndermiyoruz, güvenlik için)
+  res.json({
+    success: true,
+    user: {
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      storeCodes: user.storeCodes,
+    },
+  });
 });
 
 // ============================================
