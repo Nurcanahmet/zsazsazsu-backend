@@ -479,8 +479,16 @@ app.get('/api/reports/monthly', async (req, res) => {
 // ============================================
 app.get('/api/consultants', async (req, res) => {
   try {
-    const { startDate, endDate } = req.query;
+    const { startDate, endDate, storeCode } = req.query;
     const pool = await getPool();
+
+    // Mağaza filtresi: tek mağaza, virgülle ayrılmış birden fazla mağaza, veya hiç (admin)
+    let storeFilter = '';
+    if (storeCode) {
+      // Birden fazla mağaza kodu olabilir: "M001,M002,M003"
+      const codes = storeCode.split(',').map((c) => `'${c.trim()}'`).join(',');
+      storeFilter = `AND ih.StoreCode IN (${codes})`;
+    }
 
     const result = await pool.request()
       .input('startDate', sql.Date, startDate)
@@ -501,6 +509,7 @@ app.get('/api/consultants', async (req, res) => {
           AND il.Qty1 > 0
           AND ih.TransTypeCode = 2
           AND ih.IsReturn = 0
+          ${storeFilter}
         GROUP BY il.SalespersonCode, sp.FirstName, sp.LastName
         HAVING ISNULL(SUM(il.Qty1 * il.Price), 0) > 0
         ORDER BY salesAmount DESC
