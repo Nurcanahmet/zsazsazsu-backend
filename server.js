@@ -92,6 +92,7 @@ app.get('/api/dashboard/kpis', async (req, res) => {
     const visitorResult = await pool.request()
       .input('startDate', sql.Date, startDate)
       .input('endDate', sql.Date, endDate)
+
       .query(`
         SELECT ISNULL(SUM(InVisitorCount), 0) as ziyaretci
         FROM trStoreVisitors
@@ -535,35 +536,124 @@ app.get('/api/consultants', async (req, res) => {
 // ============================================
 // NEBIM PROCEDURE - GÜNLÜK DASHBOARD
 // ============================================
+// ============================================
+// NEBIM PROCEDURE - GÜNLÜK DASHBOARD
+// ============================================
 app.get('/api/dashboard/gunluk', async (req, res) => {
   try {
-    const { startDate, endDate } = req.query;
-
-    if (!startDate || !endDate) {
-      return res.status(400).json({ error: 'startDate ve endDate zorunludur.' });
-    }
-
+    const { startDate, endDate, storeCode } = req.query;
     const pool = await getPool();
 
-    const request = pool.request();
-    request.timeout = 90000; // 60 saniye timeout
+    // storeCode yoksa → tek çağrı, NULL gönder (tüm mağazalar)
+    if (!storeCode) {
+      const result = await pool.request()
+        .input('StartDate', sql.Date, startDate)
+        .input('EndDate', sql.Date, endDate)
+        .input('StoreCode', sql.NVarChar(20), null)
+        .execute('sp_solid_dashboard_gunluk');
 
-    request
-      .input('Startdate', sql.Date, startDate)
-      .input('enddate', sql.Date, endDate);
-
-    const result = await request.execute('sp_solid_dashboard_gunluk');
-
-    if (!result.recordset || result.recordset.length === 0) {
-      return res.json([]);
+      return res.json(result.recordset);
     }
+
+    // storeCode varsa → virgülle ayrılmış olabilir
+    const storeCodes = storeCode.split(',').map(s => s.trim()).filter(Boolean);
+
+    // Tek mağaza için tek çağrı
+    if (storeCodes.length === 1) {
+      const result = await pool.request()
+        .input('StartDate', sql.Date, startDate)
+        .input('EndDate', sql.Date, endDate)
+        .input('StoreCode', sql.NVarChar(20), storeCodes[0])
+        .execute('sp_solid_dashboard_gunluk');
+
+      return res.json(result.recordset);
+    }
+
+    // Birden fazla mağaza için paralel çağrı yap, sonuçları birleştir
+    const promises = storeCodes.map(code =>
+      pool.request()
+        .input('StartDate', sql.Date, startDate)
+        .input('EndDate', sql.Date, endDate)
+        .input('StoreCode', sql.NVarChar(20), code)
+        .execute('sp_solid_dashboard_gunluk')
+    );
+
+    const results = await Promise.all(promises);
+    const combined = results.flatMap(r => r.recordset);
+
+    res.json(combined);
+  } catch (err) {
+    console.error('Procedure hata:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ============================================
+// GÜNLÜK MAĞAZA HEDEFLERİ
+// ============================================
+// ztGunlukMagazaHedef tablosundan tarih aralığındaki hedefleri çeker
+// Mağaza bazında toplam hedef döner
+// storeCode opsiyonel — boşsa tümü, virgülle ayrılmış birden fazla olabilir
+app.get('/api/dashboard/hedefler', async (req, res) => {
+  try {
+    const { startDate, endDate, storeCode } = req.query;
+    const pool = await getPool();
+
+    let storeFilter = "AND StoreCode LIKE 'M%'";
+    if (storeCode) {
+      const codes = storeCode.split(',').map((c) => `'${c.trim()}'`).join(',');
+      storeFilter = `AND StoreCode IN (${codes})`;
+    }
+
+    const result = await pool.request()
+      .input('startDate', sql.Date, startDate)
+      .input('endDate', sql.Date, endDate)
+      .query(`
+        SELECT 
+          StoreCode,
+          SUM(TurnoverTarget) AS GunlukHedef
+        FROM ztGunlukMagazaHedef WITH (NOLOCK)
+        WHERE Tarih BETWEEN @startDate AND @endDate
+          ${storeFilter}
+        GROUP BY StoreCode
+        ORDER BY StoreCode
+      `);
 
     res.json(result.recordset);
   } catch (err) {
-    console.error('Procedure hata:', err);
-    if (err.code === 'ETIMEOUT') {
-      return res.status(504).json({ error: 'Sorgu zaman aşımına uğradı. Lütfen tarih aralığını daraltın.' });
+    console.error('Hedef sorgu hatası:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
+// ============================================
+// AYLIK DASHBOARD PROCEDURE
+// ============================================
+// sp_solid_dashboard_aylik(@AyYil) — örn: '2025-09'
+// Procedure tüm mağazaları döner, hedef ve LFL verileri içinde
+app.get('/api/dashboard/aylik', async (req, res) => {
+  try {
+    const { ayYil } = req.query; // '2025-09' formatında
+
+    if (!ayYil) {
+      return res.status(400).json({ error: 'ayYil parametresi zorunlu (örn: 2025-09)' });
     }
+
+    const pool = await getPool();
+    const result = await pool.request()
+      .input('AyYil', sql.NVarChar, ayYil)
+      .execute('sp_solid_dashboard_aylik');
+
+    // Procedure birden fazla recordset dönebilir
+    // Hepsini döndürelim, frontend seçsin
+    res.json({
+      recordsets: result.recordsets,
+      recordset: result.recordset, // ilk set
+    });
+  } catch (err) {
+    console.error('Aylık procedure hata:', err);
     res.status(500).json({ error: err.message });
   }
 });
