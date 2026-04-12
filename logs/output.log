@@ -1,0 +1,8 @@
+◇ injecting env (6) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Backend çalışıyor: http://localhost:3001
+Veritabanına bağlanılıyor...
+MSSQL bağlantısı başarılı!
+◇ injecting env (6) from .env // tip: ⌘ override existing { override: true }
+Backend çalışıyor: http://localhost:3001
+Veritabanına bağlanılıyor...
+MSSQL bağlantısı başarılı!

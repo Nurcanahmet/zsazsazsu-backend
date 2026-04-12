@@ -1,196 +1,135 @@
 // ============================================
-// KULLANICI LİSTESİ (users.js)
+// KULLANICI YÖNETİMİ (users.js)
 // ============================================
-// Her kullanıcı 4 alan içerir:
-// - role: 'admin' | 'super_user' | 'store'
-// - storeCodes: kullanıcının görebildiği mağaza kodları
-//     null = tüm mağazalar (admin için)
-//     ['M001', ...] = belirtilen mağazalar
-// - allowedPages: erişebildiği sayfalar
-//     ['dashboard', 'daily', 'monthly', 'consultants']
-//     İleride kısıtlama için kullanılacak.
+// Kullanıcılar artık users.json dosyasında tutuluyor.
+// Bu dosya JSON'u okuyan/yazan yardımcı fonksiyonlar içerir.
 
-const ALL_PAGES = ['dashboard', 'daily', 'monthly', 'consultants'];
+const fs = require('fs');
+const path = require('path');
 
-const users = [
-  // ============================================
-  // 1) DIRECTOR (Yönetici — Her şeyi görür)
-  // ============================================
-  {
-    email: 'director@zsazsazsu.com.tr',
-    password: 'Director654321@',
-    role: 'admin',
-    name: 'Director of Retail Sales & Operations',
-    storeCodes: null, // null = tüm mağazalar
-    allowedPages: ALL_PAGES,
-  },
+const USERS_FILE = path.join(__dirname, 'users.json');
 
-  // ============================================
-  // 2) SATIŞ OPERASYONLARI MÜDÜRÜ
-  // Tüm mağazaları görür ama sınırlandırılabilir
-  // ============================================
-  {
-    email: 'satisoperasyon@zsazsazsu.com.tr',
-    password: 'Satis654321@',
-    role: 'super_user',
-    name: 'Satış Operasyonları Müdürü',
-    storeCodes: null, // şimdilik tüm mağazalar
-    allowedPages: ALL_PAGES, // ileride kısıtlanabilir
-  },
+// ---------- TÜM KULLANICILARI OKU ----------
+function getUsers() {
+  try {
+    const data = fs.readFileSync(USERS_FILE, 'utf8');
+    return JSON.parse(data);
+  } catch (err) {
+    console.error('users.json okuma hatası:', err);
+    return [];
+  }
+}
 
-  // ============================================
-  // 3) İSTANBUL BÖLGE MÜDÜRÜ
-  // Sadece 4 mağaza: Emaar, Küçükyalı, Zekeriyaköy, Bahçeşehir
-  // ============================================
-  {
-    email: 'istanbulbolge@zsazsazsu.com.tr',
-    password: 'Istanbul654321@',
-    role: 'super_user',
-    name: 'İstanbul Bölge Müdürü',
-    storeCodes: ['M009', 'M004', 'M006', 'M016'],
-    allowedPages: ALL_PAGES,
-  },
+// ---------- JSON DOSYASINA YAZ ----------
+function saveUsers(users) {
+  try {
+    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf8');
+    return true;
+  } catch (err) {
+    console.error('users.json yazma hatası:', err);
+    return false;
+  }
+}
 
-  // ============================================
-  // 4) MAĞAZA ÇALIŞANLARI (17 mağaza)
-  // Her biri sadece kendi mağazasını görür
-  // ============================================
-  {
-    email: 'bodrumavenue@zsazsazsu.com.tr',
-    password: 'Bodrumavenue654321@',
-    role: 'store',
-    name: 'MUG BODRUM AVENUE AVM',
-    storeCodes: ['M001'],
-    allowedPages: ALL_PAGES,
-  },
-  {
-    email: 'cesme@zsazsazsu.com.tr',
-    password: 'Cesme654321@',
-    role: 'store',
-    name: 'IZM CESME ILICA CAD',
-    storeCodes: ['M002'],
-    allowedPages: ALL_PAGES,
-  },
-  {
-    email: 'gordion@zsazsazsu.com.tr',
-    password: 'Gordion654321@',
-    role: 'store',
-    name: 'ANK GORDION AVM',
-    storeCodes: ['M003'],
-    allowedPages: ALL_PAGES,
-  },
-  {
-    email: 'kucukyali@zsazsazsu.com.tr',
-    password: 'Kucukyali654321@',
-    role: 'store',
-    name: 'IST AND KUCUKYALI CAD',
-    storeCodes: ['M004'],
-    allowedPages: ALL_PAGES,
-  },
-  {
-    email: 'mavibahce@zsazsazsu.com.tr',
-    password: 'Mavibahce654321@',
-    role: 'store',
-    name: 'IZM MAVIBAHCE AVM',
-    storeCodes: ['M005'],
-    allowedPages: ALL_PAGES,
-  },
-  {
-    email: 'zekeriyakoy@zsazsazsu.com.tr',
-    password: 'Zekeriyakoy654321@',
-    role: 'store',
-    name: 'IST AVR ZEKERIYAKOY CAD',
-    storeCodes: ['M006'],
-    allowedPages: ALL_PAGES,
-  },
-  {
-    email: 'mallofistanbul@zsazsazsu.com.tr',
-    password: 'Mallofistanbul654321@',
-    role: 'store',
-    name: 'IST AVR MALL OF ISTANBUL AVM',
-    storeCodes: ['M007'],
-    allowedPages: ALL_PAGES,
-  },
-  {
-    email: 'marmaraforum@zsazsazsu.com.tr',
-    password: 'Marmaraforum654321@',
-    role: 'store',
-    name: 'IST AVR MARMARA FORUM AVM',
-    storeCodes: ['M008'],
-    allowedPages: ALL_PAGES,
-  },
-  {
-    email: 'emaaravm@zsazsazsu.com.tr',
-    password: 'Emaar654321@',
-    role: 'store',
-    name: 'IST AND EMAAR AVM',
-    storeCodes: ['M009'],
-    allowedPages: ALL_PAGES,
-  },
-  {
-    email: 'enntepe@zsazsazsu.com.tr',
-    password: 'Enntepe654321@',
-    role: 'store',
-    name: 'KON ENNTEPE AVM',
-    storeCodes: ['M010'],
-    allowedPages: ALL_PAGES,
-  },
-  {
-    email: 'yomra@zsazsazsu.com.tr',
-    password: 'Yomra654321@',
-    role: 'store',
-    name: 'TRA YOMRA CAD',
-    storeCodes: ['M011'],
-    allowedPages: ALL_PAGES,
-  },
-  {
-    email: 'yalikavak@zsazsazsu.com.tr',
-    password: 'Yalikavak654321@',
-    role: 'store',
-    name: 'MUG BODRUM YALIKAVAK CAD',
-    storeCodes: ['M012'],
-    allowedPages: ALL_PAGES,
-  },
-  {
-    email: 'turgutozal@zsazsazsu.com.tr',
-    password: 'Turgutozal654321@',
-    role: 'store',
-    name: 'ADN TURGUT OZAL CAD',
-    storeCodes: ['M013'],
-    allowedPages: ALL_PAGES,
-  },
-  {
-    email: 'cengelkoy@zsazsazsu.com.tr',
-    password: 'Cengelkoy654321@',
-    role: 'store',
-    name: 'IST AND CENGELKOY CAD',
-    storeCodes: ['M014'],
-    allowedPages: ALL_PAGES,
-  },
-  {
-    email: 'istinyepark@zsazsazsu.com.tr',
-    password: 'Istinyepark654321@',
-    role: 'store',
-    name: 'IZM ISTINYEPARK AVM',
-    storeCodes: ['M015'],
-    allowedPages: ALL_PAGES,
-  },
-  {
-    email: 'bahcesehir@zsazsazsu.com.tr',
-    password: 'Bahcesehir654321@',
-    role: 'store',
-    name: 'IST AVR BAHCESEHIR CAD',
-    storeCodes: ['M016'],
-    allowedPages: ALL_PAGES,
-  },
-  {
-    email: 'nisantasicitys@zsazsazsu.com.tr',
-    password: 'Nisantasicitys654321@',
-    role: 'store',
-    name: "IST AVRUPA NISANTASI CITY'S AVM",
-    storeCodes: ['M017'],
-    allowedPages: ALL_PAGES,
-  },
-];
+// ---------- EMAIL + ŞİFRE İLE KULLANICI BUL (login için) ----------
+function findUser(email, password) {
+  const users = getUsers();
+  return users.find(
+    (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
+  );
+}
 
-module.exports = users;
+// ---------- EMAIL İLE KULLANICI BUL ----------
+function findUserByEmail(email) {
+  const users = getUsers();
+  return users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+}
+
+// ---------- YENİ KULLANICI EKLE ----------
+function addUser(userData) {
+  const users = getUsers();
+
+  // Email zaten var mı kontrol et
+  if (users.some((u) => u.email.toLowerCase() === userData.email.toLowerCase())) {
+    return { success: false, error: 'Bu email ile kayıtlı bir kullanıcı zaten var.' };
+  }
+
+  // Yeni kullanıcıyı ekle
+  const newUser = {
+    email: userData.email,
+    password: userData.password,
+    role: userData.role || 'store',
+    name: userData.name || '',
+    storeCodes: userData.storeCodes || [],
+    allowedPages: userData.allowedPages || ['dashboard', 'daily', 'monthly', 'consultants'],
+  };
+
+  users.push(newUser);
+
+  if (saveUsers(users)) {
+    return { success: true, user: newUser };
+  }
+  return { success: false, error: 'Kullanıcı kaydedilemedi.' };
+}
+
+// ---------- KULLANICI GÜNCELLE ----------
+function updateUser(email, updatedData) {
+  const users = getUsers();
+  const index = users.findIndex(
+    (u) => u.email.toLowerCase() === email.toLowerCase()
+  );
+
+  if (index === -1) {
+    return { success: false, error: 'Kullanıcı bulunamadı.' };
+  }
+
+  // Sadece gönderilen alanları güncelle (password boşsa eski kalsın)
+  const updated = { ...users[index], ...updatedData };
+  if (!updatedData.password || updatedData.password.trim() === '') {
+    updated.password = users[index].password; // eski şifreyi koru
+  }
+
+  users[index] = updated;
+
+  if (saveUsers(users)) {
+    return { success: true, user: updated };
+  }
+  return { success: false, error: 'Kullanıcı güncellenemedi.' };
+}
+
+// ---------- KULLANICI SİL ----------
+function deleteUser(email) {
+  const users = getUsers();
+  const index = users.findIndex(
+    (u) => u.email.toLowerCase() === email.toLowerCase()
+  );
+
+  if (index === -1) {
+    return { success: false, error: 'Kullanıcı bulunamadı.' };
+  }
+
+  // Admin kendini silemesin
+  if (users[index].role === 'admin') {
+    const adminCount = users.filter((u) => u.role === 'admin').length;
+    if (adminCount <= 1) {
+      return { success: false, error: 'Son admin kullanıcı silinemez.' };
+    }
+  }
+
+  users.splice(index, 1);
+
+  if (saveUsers(users)) {
+    return { success: true };
+  }
+  return { success: false, error: 'Kullanıcı silinemedi.' };
+}
+
+// ---------- DIŞA AKTAR ----------
+module.exports = {
+  getUsers,
+  findUser,
+  findUserByEmail,
+  addUser,
+  updateUser,
+  deleteUser,
+};

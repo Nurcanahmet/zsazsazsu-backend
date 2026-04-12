@@ -1,0 +1,353 @@
+[
+  {
+    "email": "admin@zsazsazsu.com.tr",
+    "password": "Admin654321@",
+    "role": "admin",
+    "name": "Sistem Yöneticisi",
+    "storeCodes": null,
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "selim.sahin@zsazsazsu.com.tr",
+    "password": "Selim654321@",
+    "role": "admin",
+    "name": "selim sahin",
+    "storeCodes": null,
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "director@zsazsazsu.com.tr",
+    "password": "Director654321@",
+    "role": "admin",
+    "name": "Director of Retail Sales & Operations",
+    "storeCodes": null,
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "satisoperasyon@zsazsazsu.com.tr",
+    "password": "Satis654321@",
+    "role": "super_user",
+    "name": "Satış Operasyonları Müdürü",
+    "storeCodes": null,
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "istanbulbolge@zsazsazsu.com.tr",
+    "password": "Istanbul654321@",
+    "role": "super_user",
+    "name": "İstanbul Bölge Müdürü",
+    "storeCodes": [
+      "M009",
+      "M004",
+      "M006",
+      "M016"
+    ],
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "bodrumavenue@zsazsazsu.com.tr",
+    "password": "Bodrumavenue654321@",
+    "role": "store",
+    "name": "MUG BODRUM AVENUE AVM",
+    "storeCodes": [
+      "M001"
+    ],
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "cesme@zsazsazsu.com.tr",
+    "password": "Cesme654321@",
+    "role": "store",
+    "name": "IZM CESME ILICA CAD",
+    "storeCodes": [
+      "M002"
+    ],
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "gordion@zsazsazsu.com.tr",
+    "password": "Gordion654321@",
+    "role": "store",
+    "name": "ANK GORDION AVM",
+    "storeCodes": [
+      "M003"
+    ],
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "kucukyali@zsazsazsu.com.tr",
+    "password": "Kucukyali654321@",
+    "role": "store",
+    "name": "IST AND KUCUKYALI CAD",
+    "storeCodes": [
+      "M004"
+    ],
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "mavibahce@zsazsazsu.com.tr",
+    "password": "Mavibahce654321@",
+    "role": "store",
+    "name": "IZM MAVIBAHCE AVM",
+    "storeCodes": [
+      "M005"
+    ],
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "zekeriyakoy@zsazsazsu.com.tr",
+    "password": "Zekeriyakoy654321@",
+    "role": "store",
+    "name": "IST AVR ZEKERIYAKOY CAD",
+    "storeCodes": [
+      "M006"
+    ],
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "mallofistanbul@zsazsazsu.com.tr",
+    "password": "Mallofistanbul654321@",
+    "role": "store",
+    "name": "IST AVR MALL OF ISTANBUL AVM",
+    "storeCodes": [
+      "M007"
+    ],
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "marmaraforum@zsazsazsu.com.tr",
+    "password": "Marmaraforum654321@",
+    "role": "store",
+    "name": "IST AVR MARMARA FORUM AVM",
+    "storeCodes": [
+      "M008"
+    ],
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "emaaravm@zsazsazsu.com.tr",
+    "password": "Emaar654321@",
+    "role": "store",
+    "name": "IST AND EMAAR AVM",
+    "storeCodes": [
+      "M009"
+    ],
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "enntepe@zsazsazsu.com.tr",
+    "password": "Enntepe654321@",
+    "role": "store",
+    "name": "KON ENNTEPE AVM",
+    "storeCodes": [
+      "M010"
+    ],
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "yomra@zsazsazsu.com.tr",
+    "password": "Yomra654321@",
+    "role": "store",
+    "name": "TRA YOMRA CAD",
+    "storeCodes": [
+      "M011"
+    ],
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "yalikavak@zsazsazsu.com.tr",
+    "password": "Yalikavak654321@",
+    "role": "store",
+    "name": "MUG BODRUM YALIKAVAK CAD",
+    "storeCodes": [
+      "M012"
+    ],
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "turgutozal@zsazsazsu.com.tr",
+    "password": "Turgutozal654321@",
+    "role": "store",
+    "name": "ADN TURGUT OZAL CAD",
+    "storeCodes": [
+      "M013"
+    ],
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "cengelkoy@zsazsazsu.com.tr",
+    "password": "Cengelkoy654321@",
+    "role": "store",
+    "name": "IST AND CENGELKOY CAD",
+    "storeCodes": [
+      "M014"
+    ],
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "istinyepark@zsazsazsu.com.tr",
+    "password": "Istinyepark654321@",
+    "role": "store",
+    "name": "IZM ISTINYEPARK AVM",
+    "storeCodes": [
+      "M015"
+    ],
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "bahcesehir@zsazsazsu.com.tr",
+    "password": "Bahcesehir654321@",
+    "role": "store",
+    "name": "IST AVR BAHCESEHIR CAD",
+    "storeCodes": [
+      "M016"
+    ],
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "nisantasicitys@zsazsazsu.com.tr",
+    "password": "Nisantasicitys654321@",
+    "role": "store",
+    "name": "IST AVRUPA NISANTASI CITY'S AVM",
+    "storeCodes": [
+      "M017"
+    ],
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "nurcan@zsazsazsu.com.tr",
+    "password": "Nurcan654321@",
+    "role": "store",
+    "name": "nurcan",
+    "storeCodes": [],
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  },
+  {
+    "email": "yunus.dize@zsazsazsu.com.tr",
+    "password": "Yunus654321@",
+    "role": "store",
+    "name": "yunus",
+    "storeCodes": [],
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
+  }
+]

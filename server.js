@@ -3,7 +3,7 @@
 // ============================================
 
 const express = require('express');
-const users = require('./users');
+const userStore = require('./users');
 const sql = require('mssql');
 const cors = require('cors');
 require('dotenv').config();
@@ -536,9 +536,7 @@ app.get('/api/consultants', async (req, res) => {
 // ============================================
 // NEBIM PROCEDURE - GÜNLÜK DASHBOARD
 // ============================================
-// ============================================
-// NEBIM PROCEDURE - GÜNLÜK DASHBOARD
-// ============================================
+
 app.get('/api/dashboard/gunluk', async (req, res) => {
   try {
     const { startDate, endDate, storeCode } = req.query;
@@ -667,38 +665,146 @@ app.get('/api/dashboard/aylik', async (req, res) => {
 app.post('/api/login', (req, res) => {
   const { email, password } = req.body;
 
-  // Email ve şifre boş mu kontrol et
   if (!email || !password) {
-    return res.status(400).json({
-      success: false,
-      error: 'Email ve şifre zorunludur',
-    });
+    return res.json({ success: false, error: 'Email ve şifre zorunlu' });
   }
 
-  // Kullanıcıyı users.js'de ara
-  const user = users.find(
-    (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
-  );
+  const user = userStore.findUser(email, password);
 
-  // Bulunamadıysa hata dön
   if (!user) {
-    return res.status(401).json({
-      success: false,
-      error: 'Email veya şifre hatalı',
-    });
+    return res.json({ success: false, error: 'Email veya şifre hatalı' });
   }
 
-  // Bulunduysa şifre HARİÇ kullanıcı bilgilerini dön
-  // (şifreyi frontend'e göndermiyoruz, güvenlik için)
-  res.json({
-    success: true,
-    user: {
-      email: user.email,
-      name: user.name,
-      role: user.role,
-      storeCodes: user.storeCodes,
-    },
-  });
+  // Şifreyi dönüş objesinden çıkar
+  const { password: _, ...userWithoutPassword } = user;
+
+  res.json({ success: true, user: userWithoutPassword });
+});
+
+
+// ============================================
+// ADMIN PANELİ — KULLANICI YÖNETİMİ
+// ============================================
+// Bu endpoint'lerin hepsi admin kontrolü yapar
+// Frontend, admin olmayan kullanıcıların bu sayfaya girmesini zaten engelliyor
+// ama yine de backend'de de güvenlik için kontrol ediyoruz
+
+// Admin yetki kontrol middleware'i
+function requireAdmin(req, res, next) {
+  const adminEmail = req.headers['x-admin-email'];
+  if (!adminEmail) {
+    return res.status(401).json({ success: false, error: 'Yetkisiz erişim' });
+  }
+
+  const user = userStore.findUserByEmail(adminEmail);
+  if (!user || user.role !== 'admin') {
+    return res.status(403).json({ success: false, error: 'Bu işlem için admin yetkisi gerekli' });
+  }
+
+  next();
+}
+
+// ---------- TÜM KULLANICILARI LİSTELE ----------
+app.get('/api/admin/users', requireAdmin, (req, res) => {
+  try {
+    const users = userStore.getUsers();
+    // Şifreleri gizle
+    const safeUsers = users.map(({ password, ...u }) => u);
+    res.json({ success: true, users: safeUsers });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ---------- YENİ KULLANICI EKLE ----------
+app.post('/api/admin/users', requireAdmin, (req, res) => {
+  try {
+    const { email, password, name, role, storeCodes } = req.body;
+
+    if (!email || !password || !name || !role) {
+      return res.json({ success: false, error: 'Email, şifre, ad ve rol zorunlu' });
+    }
+
+    const result = userStore.addUser({
+      email,
+      password,
+      name,
+      role,
+      storeCodes: storeCodes || [],
+    });
+
+    if (!result.success) {
+      return res.json(result);
+    }
+
+    // Eklenen kullanıcıyı şifresiz dön
+    const { password: _, ...safeUser } = result.user;
+    res.json({ success: true, user: safeUser });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ---------- KULLANICI GÜNCELLE ----------
+app.put('/api/admin/users/:email', requireAdmin, (req, res) => {
+  try {
+    const { email } = req.params;
+    const { password, name, role, storeCodes } = req.body;
+
+    const updateData = {};
+    if (password !== undefined) updateData.password = password;
+    if (name !== undefined) updateData.name = name;
+    if (role !== undefined) updateData.role = role;
+    if (storeCodes !== undefined) updateData.storeCodes = storeCodes;
+
+    const result = userStore.updateUser(email, updateData);
+
+    if (!result.success) {
+      return res.json(result);
+    }
+
+    const { password: _, ...safeUser } = result.user;
+    res.json({ success: true, user: safeUser });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ---------- KULLANICI SİL ----------
+app.delete('/api/admin/users/:email', requireAdmin, (req, res) => {
+  try {
+    const { email } = req.params;
+    const result = userStore.deleteUser(email);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ---------- MAĞAZA LİSTESİ (Modal dropdown için) ----------
+// sp_solid_dashboard_gunluk'tan bugünün verisini çeker, sadece StoreCode ve StoreDescription döner
+app.get('/api/admin/stores', requireAdmin, async (req, res) => {
+  try {
+    const pool = await getPool();
+    const today = new Date().toISOString().split('T')[0];
+
+    const result = await pool.request()
+      .input('StartDate', sql.Date, today)
+      .input('EndDate', sql.Date, today)
+      .input('StoreCode', sql.NVarChar(20), null)
+      .execute('sp_solid_dashboard_gunluk');
+
+    // Sadece kod ve isim döner
+    const stores = result.recordset.map(s => ({
+      StoreCode: s.StoreCode,
+      StoreDescription: s.StoreDescription,
+    }));
+
+    res.json({ success: true, stores });
+  } catch (err) {
+    console.error('Mağaza listesi hatası:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 // ============================================
