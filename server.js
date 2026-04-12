@@ -483,10 +483,9 @@ app.get('/api/consultants', async (req, res) => {
     const { startDate, endDate, storeCode } = req.query;
     const pool = await getPool();
 
-    // Mağaza filtresi: tek mağaza, virgülle ayrılmış birden fazla mağaza, veya hiç (admin)
+    // Mağaza filtresi
     let storeFilter = '';
     if (storeCode) {
-      // Birden fazla mağaza kodu olabilir: "M001,M002,M003"
       const codes = storeCode.split(',').map((c) => `'${c.trim()}'`).join(',');
       storeFilter = `AND ih.StoreCode IN (${codes})`;
     }
@@ -498,21 +497,26 @@ app.get('/api/consultants', async (req, res) => {
         SELECT 
           il.SalespersonCode,
           LTRIM(RTRIM(sp.FirstName)) + ' ' + LTRIM(RTRIM(sp.LastName)) as name,
-          ISNULL(SUM(il.Qty1 * il.Price), 0) as salesAmount,
-          COUNT(DISTINCT ih.InvoiceHeaderID) as invoiceCount,
-          CASE WHEN COUNT(DISTINCT ih.InvoiceHeaderID) > 0
-            THEN ISNULL(SUM(il.Qty1 * il.Price), 0) / COUNT(DISTINCT ih.InvoiceHeaderID)
-            ELSE 0 END as avgBasket
+
+          -- SATIŞ (IsReturn = 0)
+          ISNULL(SUM(CASE WHEN ih.IsReturn = 0 THEN il.Qty1 * il.Price ELSE 0 END), 0) as salesAmount,
+          COUNT(DISTINCT CASE WHEN ih.IsReturn = 0 THEN ih.InvoiceHeaderID END) as invoiceCount,
+
+          -- İADE (IsReturn = 1)
+          ISNULL(SUM(CASE WHEN ih.IsReturn = 1 THEN il.Qty1 ELSE 0 END), 0) as returnQty,
+          ISNULL(SUM(CASE WHEN ih.IsReturn = 1 THEN il.Qty1 * il.Price ELSE 0 END), 0) as returnAmount
+
         FROM trInvoiceLine il
         JOIN trInvoiceHeader ih ON il.InvoiceHeaderID = ih.InvoiceHeaderID
         JOIN cdSalesperson sp ON il.SalespersonCode = sp.SalespersonCode
         WHERE ih.InvoiceDate BETWEEN @startDate AND @endDate
-          AND il.Qty1 > 0
           AND ih.TransTypeCode = 2
-          AND ih.IsReturn = 0
+          AND ih.ProcessCode = 'R'
+          AND ih.IsCompleted = 1
+          AND il.ItemTypeCode = 1
           ${storeFilter}
         GROUP BY il.SalespersonCode, sp.FirstName, sp.LastName
-        HAVING ISNULL(SUM(il.Qty1 * il.Price), 0) > 0
+        HAVING ISNULL(SUM(CASE WHEN ih.IsReturn = 0 THEN il.Qty1 * il.Price ELSE 0 END), 0) > 0
         ORDER BY salesAmount DESC
       `);
 
@@ -521,9 +525,9 @@ app.get('/api/consultants', async (req, res) => {
       name: c.name,
       salesAmount: Math.round(c.salesAmount),
       invoiceCount: c.invoiceCount,
-      avgBasket: Math.round(c.avgBasket),
-      target: 80000,
-      achievement: Math.round((c.salesAmount / 80000) * 100),
+      avgBasket: c.invoiceCount > 0 ? Math.round(c.salesAmount / c.invoiceCount) : 0,
+      returnQty: Math.abs(Math.round(c.returnQty)),    // negatif olabilir, pozitif göster
+      returnAmount: Math.abs(Math.round(c.returnAmount)),
     }));
 
     res.json(consultants);
@@ -705,12 +709,11 @@ function requireAdmin(req, res, next) {
 }
 
 // ---------- TÜM KULLANICILARI LİSTELE ----------
+
 app.get('/api/admin/users', requireAdmin, (req, res) => {
   try {
     const users = userStore.getUsers();
-    // Şifreleri gizle
-    const safeUsers = users.map(({ password, ...u }) => u);
-    res.json({ success: true, users: safeUsers });
+    res.json({ success: true, users });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -719,19 +722,19 @@ app.get('/api/admin/users', requireAdmin, (req, res) => {
 // ---------- YENİ KULLANICI EKLE ----------
 app.post('/api/admin/users', requireAdmin, (req, res) => {
   try {
-    const { email, password, name, role, storeCodes } = req.body;
+    const { email, password, name, role, storeCodes, allowedPages } = req.body;
 
     if (!email || !password || !name || !role) {
       return res.json({ success: false, error: 'Email, şifre, ad ve rol zorunlu' });
     }
-
-    const result = userStore.addUser({
-      email,
-      password,
-      name,
-      role,
-      storeCodes: storeCodes || [],
-    });
+const result = userStore.addUser({
+  email,
+  password,
+  name,
+  role,
+  storeCodes: storeCodes || [],
+  allowedPages: allowedPages || ['dashboard', 'daily', 'monthly', 'consultants'],
+});
 
     if (!result.success) {
       return res.json(result);
@@ -749,13 +752,14 @@ app.post('/api/admin/users', requireAdmin, (req, res) => {
 app.put('/api/admin/users/:email', requireAdmin, (req, res) => {
   try {
     const { email } = req.params;
-    const { password, name, role, storeCodes } = req.body;
+    const { password, name, role, storeCodes, allowedPages } = req.body;
 
     const updateData = {};
     if (password !== undefined) updateData.password = password;
     if (name !== undefined) updateData.name = name;
     if (role !== undefined) updateData.role = role;
     if (storeCodes !== undefined) updateData.storeCodes = storeCodes;
+    if (allowedPages !== undefined) updateData.allowedPages = allowedPages;
 
     const result = userStore.updateUser(email, updateData);
 
@@ -783,22 +787,25 @@ app.delete('/api/admin/users/:email', requireAdmin, (req, res) => {
 
 // ---------- MAĞAZA LİSTESİ (Modal dropdown için) ----------
 // sp_solid_dashboard_gunluk'tan bugünün verisini çeker, sadece StoreCode ve StoreDescription döner
-app.get('/api/admin/stores', requireAdmin, async (req, res) => {
+// ---------- MAĞAZA LİSTESİ (Modal dropdown için) ----------
+// Statik mağaza listesi - users.json'daki mevcut mağaza kodlarına dayalı
+app.get('/api/admin/stores', requireAdmin, (req, res) => {
   try {
-    const pool = await getPool();
-    const today = new Date().toISOString().split('T')[0];
+    const allUsers = userStore.getUsers();
+    const storeMap = new Map();
 
-    const result = await pool.request()
-      .input('StartDate', sql.Date, today)
-      .input('EndDate', sql.Date, today)
-      .input('StoreCode', sql.NVarChar(20), null)
-      .execute('sp_solid_dashboard_gunluk');
+    // Tüm kullanıcılardan mağaza kodu + mağaza adını topla
+    allUsers.forEach((u) => {
+      if (u.role === 'store' && u.storeCodes && u.storeCodes.length === 1) {
+        // Mağaza rolündeki kullanıcıların name'i mağaza adı
+        storeMap.set(u.storeCodes[0], u.name);
+      }
+    });
 
-    // Sadece kod ve isim döner
-    const stores = result.recordset.map(s => ({
-      StoreCode: s.StoreCode,
-      StoreDescription: s.StoreDescription,
-    }));
+    // Eksik kod olursa üstüne yaz
+    const stores = Array.from(storeMap.entries())
+      .map(([StoreCode, StoreDescription]) => ({ StoreCode, StoreDescription }))
+      .sort((a, b) => a.StoreCode.localeCompare(b.StoreCode));
 
     res.json({ success: true, stores });
   } catch (err) {

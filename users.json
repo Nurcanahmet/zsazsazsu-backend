@@ -325,28 +325,44 @@
     ]
   },
   {
-    "email": "nurcan@zsazsazsu.com.tr",
-    "password": "Nurcan654321@",
-    "role": "store",
-    "name": "nurcan",
-    "storeCodes": [],
+    "email": "test@zsazsazsu.com.tr",
+    "password": "Test654321@",
+    "role": "super_user",
+    "name": "Test",
+    "storeCodes": [
+      "M007",
+      "M014"
+    ],
     "allowedPages": [
       "dashboard",
       "daily",
-      "monthly",
-      "consultants"
+      "monthly"
     ]
   },
   {
-    "email": "yunus.dize@zsazsazsu.com.tr",
-    "password": "Yunus654321@",
+    "email": "nurcan@zsazsazsu.com.tr",
+    "password": "Nurcan654321@",
     "role": "store",
-    "name": "yunus",
-    "storeCodes": [],
+    "name": "nurcan retail",
+    "storeCodes": [
+      "M009"
+    ],
     "allowedPages": [
       "dashboard",
       "daily",
-      "monthly",
+      "monthly"
+    ]
+  },
+  {
+    "email": "yeni@zsazsazsu.com.tr",
+    "password": "Yeni654321@",
+    "role": "store",
+    "name": "yeni kullanıcı",
+    "storeCodes": [
+      "M014"
+    ],
+    "allowedPages": [
+      "dashboard",
       "consultants"
     ]
   }
