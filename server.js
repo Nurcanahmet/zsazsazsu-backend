@@ -483,55 +483,82 @@ app.get('/api/consultants', async (req, res) => {
     const { startDate, endDate, storeCode } = req.query;
     const pool = await getPool();
 
-    // Mağaza filtresi
+    // 1) sp_Akinon_SalesPerson'dan tüm danışmanları çek (master liste)
+    const akinonResult = await pool.request().execute('sp_Akinon_SalesPerson');
+    const akinonMap = new Map();
+
+    akinonResult.recordset.forEach((row) => {
+      // Filtreler
+      const code = row.SalespersonCode;
+      const name = (row.FirstLastName || '').trim();
+      const store = row.StoreCode;
+
+      if (!code || !name || !store) return;
+      if (name.toLowerCase().includes('havuz')) return;
+      if (name.toLowerCase().includes('test')) return;
+      if (store === 'ET001' || store === 'TEST') return;
+
+      akinonMap.set(code, {
+        storeCode: store,
+        storeDescription: (row.OfficeDescription || '').trim(),
+        name,
+      });
+    });
+
+    // 2) Performans verisini SQL ile çek
     let storeFilter = '';
     if (storeCode) {
       const codes = storeCode.split(',').map((c) => `'${c.trim()}'`).join(',');
       storeFilter = `AND ih.StoreCode IN (${codes})`;
     }
 
-    const result = await pool.request()
+    const perfResult = await pool.request()
       .input('startDate', sql.Date, startDate)
       .input('endDate', sql.Date, endDate)
       .query(`
         SELECT 
           il.SalespersonCode,
-          LTRIM(RTRIM(sp.FirstName)) + ' ' + LTRIM(RTRIM(sp.LastName)) as name,
-
-          -- SATIŞ (IsReturn = 0)
+          ih.StoreCode as storeCode,
           ISNULL(SUM(CASE WHEN ih.IsReturn = 0 THEN il.Qty1 * il.Price ELSE 0 END), 0) as salesAmount,
           COUNT(DISTINCT CASE WHEN ih.IsReturn = 0 THEN ih.InvoiceHeaderID END) as invoiceCount,
-
-          -- İADE (IsReturn = 1)
           ISNULL(SUM(CASE WHEN ih.IsReturn = 1 THEN il.Qty1 ELSE 0 END), 0) as returnQty,
           ISNULL(SUM(CASE WHEN ih.IsReturn = 1 THEN il.Qty1 * il.Price ELSE 0 END), 0) as returnAmount
-
         FROM trInvoiceLine il
         JOIN trInvoiceHeader ih ON il.InvoiceHeaderID = ih.InvoiceHeaderID
-        JOIN cdSalesperson sp ON il.SalespersonCode = sp.SalespersonCode
         WHERE ih.InvoiceDate BETWEEN @startDate AND @endDate
           AND ih.TransTypeCode = 2
           AND ih.ProcessCode = 'R'
           AND ih.IsCompleted = 1
           AND il.ItemTypeCode = 1
           ${storeFilter}
-        GROUP BY il.SalespersonCode, sp.FirstName, sp.LastName
+        GROUP BY il.SalespersonCode, ih.StoreCode
         HAVING ISNULL(SUM(CASE WHEN ih.IsReturn = 0 THEN il.Qty1 * il.Price ELSE 0 END), 0) > 0
-        ORDER BY salesAmount DESC
       `);
 
-    const consultants = result.recordset.map((c, i) => ({
-      rank: i + 1,
-      name: c.name,
-      salesAmount: Math.round(c.salesAmount),
-      invoiceCount: c.invoiceCount,
-      avgBasket: c.invoiceCount > 0 ? Math.round(c.salesAmount / c.invoiceCount) : 0,
-      returnQty: Math.abs(Math.round(c.returnQty)),    // negatif olabilir, pozitif göster
-      returnAmount: Math.abs(Math.round(c.returnAmount)),
-    }));
+    // 3) Akinon listesi + performans verisini birleştir
+    const consultants = perfResult.recordset
+      .map((p) => {
+        const info = akinonMap.get(p.SalespersonCode);
+        if (!info) return null; // Akinon'da yoksa atla (havuz, test vb.)
+
+        return {
+          name: info.name,
+          storeCode: p.storeCode,
+          storeDescription: info.storeDescription,
+          salesAmount: Math.round(p.salesAmount),
+          invoiceCount: p.invoiceCount,
+          avgBasket: p.invoiceCount > 0 ? Math.round(p.salesAmount / p.invoiceCount) : 0,
+          returnQty: Math.abs(Math.round(p.returnQty)),
+          returnAmount: Math.abs(Math.round(p.returnAmount)),
+        };
+      })
+      .filter(Boolean)
+      .sort((a, b) => b.salesAmount - a.salesAmount)
+      .map((c, i) => ({ rank: i + 1, ...c }));
 
     res.json(consultants);
   } catch (err) {
+    console.error('Consultants hatası:', err);
     res.status(500).json({ error: err.message });
   }
 });

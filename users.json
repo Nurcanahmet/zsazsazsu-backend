@@ -365,5 +365,18 @@
       "dashboard",
       "consultants"
     ]
+  },
+  {
+    "email": "Yakup.Ep@zsazsazsu.com.tr",
+    "password": "Yakup654321@",
+    "role": "admin",
+    "name": "ERP Manager",
+    "storeCodes": null,
+    "allowedPages": [
+      "dashboard",
+      "daily",
+      "monthly",
+      "consultants"
+    ]
   }
 ]
