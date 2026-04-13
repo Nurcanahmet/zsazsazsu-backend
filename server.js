@@ -789,27 +789,78 @@ app.delete('/api/admin/users/:email', requireAdmin, (req, res) => {
 // sp_solid_dashboard_gunluk'tan bugünün verisini çeker, sadece StoreCode ve StoreDescription döner
 // ---------- MAĞAZA LİSTESİ (Modal dropdown için) ----------
 // Statik mağaza listesi - users.json'daki mevcut mağaza kodlarına dayalı
-app.get('/api/admin/stores', requireAdmin, (req, res) => {
+// ---------- MAĞAZA LİSTESİ (sp_Akinon_SalesPerson'dan DISTINCT) ----------
+app.get('/api/admin/stores', requireAdmin, async (req, res) => {
   try {
-    const allUsers = userStore.getUsers();
-    const storeMap = new Map();
+    const pool = await getPool();
+    const result = await pool.request().execute('sp_Akinon_SalesPerson');
 
-    // Tüm kullanıcılardan mağaza kodu + mağaza adını topla
-    allUsers.forEach((u) => {
-      if (u.role === 'store' && u.storeCodes && u.storeCodes.length === 1) {
-        // Mağaza rolündeki kullanıcıların name'i mağaza adı
-        storeMap.set(u.storeCodes[0], u.name);
-      }
-    });
+    // DISTINCT mağaza listesi (StoreCode + StoreDescription)
+    // ET, TEST, Havuz gibi gerçek olmayan kayıtları filtrele
+    const seen = new Set();
+    const stores = [];
 
-    // Eksik kod olursa üstüne yaz
-    const stores = Array.from(storeMap.entries())
-      .map(([StoreCode, StoreDescription]) => ({ StoreCode, StoreDescription }))
-      .sort((a, b) => a.StoreCode.localeCompare(b.StoreCode));
+    for (const row of result.recordset) {
+      const code = row.StoreCode;
+      const desc = row.OfficeDescription || '';
+
+      // Filtreler
+      if (!code) continue;
+      if (code === 'ET001') continue;            // E-ticaret
+      if (code === 'TEST') continue;             // Test mağazası
+      if (seen.has(code)) continue;              // Tekrarları atla
+
+      seen.add(code);
+      stores.push({ StoreCode: code, StoreDescription: desc });
+    }
+
+    // Kod sırasına göre sırala
+    stores.sort((a, b) => a.StoreCode.localeCompare(b.StoreCode));
 
     res.json({ success: true, stores });
   } catch (err) {
     console.error('Mağaza listesi hatası:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ---------- DANIŞMAN LİSTESİ (sp_Akinon_SalesPerson) ----------
+// Tüm danışmanlar veya belirli mağazaların danışmanları
+// Query: ?storeCode=M009 veya ?storeCode=M001,M002
+app.get('/api/admin/salespersons', requireAdmin, async (req, res) => {
+  try {
+    const { storeCode } = req.query;
+    const pool = await getPool();
+    const result = await pool.request().execute('sp_Akinon_SalesPerson');
+
+    let salespersons = result.recordset
+      .filter(row => row.StoreCode && row.SalespersonCode && row.FirstLastName)
+      .map(row => ({
+        StoreCode: row.StoreCode,
+        StoreDescription: row.OfficeDescription || '',
+        SalespersonCode: row.SalespersonCode,
+        Name: row.FirstLastName.trim(),
+      }))
+      // Havuz satışı, test ve e-ticaret kayıtlarını filtrele
+      .filter(p => 
+        !p.Name.toLowerCase().includes('havuz') &&
+        !p.Name.toLowerCase().includes('test') &&
+        p.StoreCode !== 'ET001' &&
+        p.StoreCode !== 'TEST'
+      );
+
+    // Mağaza filtresi (opsiyonel)
+    if (storeCode) {
+      const codes = storeCode.split(',').map(c => c.trim());
+      salespersons = salespersons.filter(p => codes.includes(p.StoreCode));
+    }
+
+    // İsme göre sırala
+    salespersons.sort((a, b) => a.Name.localeCompare(b.Name, 'tr'));
+
+    res.json({ success: true, salespersons });
+  } catch (err) {
+    console.error('Danışman listesi hatası:', err);
     res.status(500).json({ success: false, error: err.message });
   }
 });

@@ -18,3 +18,11 @@ MSSQL bağlantısı başarılı!
 Backend çalışıyor: http://localhost:3001
 Veritabanına bağlanılıyor...
 MSSQL bağlantısı başarılı!
+◇ injecting env (6) from .env // tip: ⌘ enable debugging { debug: true }
+Backend çalışıyor: http://localhost:3001
+Veritabanına bağlanılıyor...
+MSSQL bağlantısı başarılı!
+◇ injecting env (6) from .env // tip: ⌘ suppress logs { quiet: true }
+Backend çalışıyor: http://localhost:3001
+Veritabanına bağlanılıyor...
+MSSQL bağlantısı başarılı!
