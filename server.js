@@ -476,6 +476,43 @@ app.get('/api/reports/monthly', async (req, res) => {
 });
 
 // ============================================
+// DANIŞMAN LİSTESİ (dropdown için - sp_Akinon_SalesPerson)
+// ============================================
+app.get('/api/salespersons', async (req, res) => {
+  try {
+    const { storeCode } = req.query;
+    const pool = await getPool();
+    const result = await pool.request().execute('sp_Akinon_SalesPerson');
+
+    let salespersons = result.recordset
+      .filter(row => row.StoreCode && row.SalespersonCode && row.FirstLastName)
+      .map(row => ({
+        storeCode: row.StoreCode,
+        storeDescription: (row.OfficeDescription || '').trim(),
+        salespersonCode: row.SalespersonCode,
+        name: row.FirstLastName.trim(),
+      }))
+      .filter(p =>
+        !p.name.toLowerCase().includes('havuz') &&
+        !p.name.toLowerCase().includes('test') &&
+        p.storeCode !== 'ET001' &&
+        p.storeCode !== 'TEST'
+      );
+
+    if (storeCode) {
+      const codes = storeCode.split(',').map(c => c.trim());
+      salespersons = salespersons.filter(p => codes.includes(p.storeCode));
+    }
+
+    salespersons.sort((a, b) => a.name.localeCompare(b.name, 'tr'));
+    res.json(salespersons);
+  } catch (err) {
+    console.error('Danışman listesi hatası:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ============================================
 // SATIŞ DANIŞMANLARI
 // ============================================
 app.get('/api/consultants', async (req, res) => {

@@ -1286,3 +1286,276 @@ Hedef sorgu hatası: ConnectionError: Failed to connect to 10.10.20.15:1433 in 1
     code: 'ETIMEOUT'
   }
 }
+Bağlantı hatası: The "config.server" property is required and must be of type string.
+Procedure hata: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Hedef sorgu hatası: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Consultants hatası: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Danışman listesi hatası: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Procedure hata: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Hedef sorgu hatası: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Danışman listesi hatası: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Consultants hatası: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Procedure hata: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Hedef sorgu hatası: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Hedef sorgu hatası: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Procedure hata: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Hedef sorgu hatası: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Procedure hata: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Procedure hata: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Hedef sorgu hatası: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Procedure hata: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Hedef sorgu hatası: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Danışman listesi hatası: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Consultants hatası: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Hedef sorgu hatası: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Procedure hata: TypeError: The "config.server" property is required and must be of type string.
+    at new Connection (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:289:13)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:78:19
+    at new Promise (<anonymous>)
+    at ConnectionPool._poolCreate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\connection-pool.js:67:12)
+    at ConnectionPool._connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:445:10)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:417:19
+    at new Promise (<anonymous>)
+    at ConnectionPool.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:416:12)
+    at Object.connect (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\global-connection.js:59:27)
+    at getPool (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\server.js:47:22)
+Consultants hatası: RequestError: Validation failed for parameter 'endDate'. Out of range.
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\request.js:449:19
+    at Array.forEach (<anonymous>)
+    at Request.userCallback (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\request.js:446:46)
+    at Request.callback (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\request.js:239:14)
+    at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:1657:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:85:11) {
+  code: 'EPARAM',
+  originalError: RequestError: Validation failed for parameter 'endDate'. Out of range.
+      at Request.validateParameters (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\request.js:331:15)
+      at Connection.execSql (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:1652:15)
+      ... 2 lines matching cause stack trace ...
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+    code: 'EPARAM',
+    [cause]: TypeError: Out of range.
+        at Object.validate (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\data-types\date.js:62:13)
+        at Request.validateParameters (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\request.js:329:42)
+        at Connection.execSql (C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\tedious\lib\connection.js:1652:15)
+        at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\tedious\request.js:705:65
+        at C:\Users\nurcan.ahmet\Desktop\zsazsazsu-backend\node_modules\mssql\lib\base\connection-pool.js:370:41
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+  },
+  number: 'EPARAM',
+  lineNumber: undefined,
+  state: undefined,
+  class: undefined,
+  serverName: undefined,
+  procName: undefined,
+  precedingErrors: []
+}
